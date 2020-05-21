@@ -1,0 +1,218 @@
+@charset "utf-8";
+
+//----------------------------------------
+//レスポンシブ用
+//----------------------------------------
+
+// ブレイクポイント設定
+$max-breakpoints: (
+        /*'sm': 640px,*/
+        'tb': 767px,
+        /*'pc': 960px*/
+);
+$min-breakpoints: (
+        /*'tb': 641px,*/
+        'pc': 768px
+);
+
+
+// メディアクエリ用
+@mixin max-mq($breakpoint: tb) {//767px以下
+  @media screen and (max-width: #{map-get($max-breakpoints, $breakpoint)}) {
+    @content;
+  }
+}
+
+@mixin min-mq($breakpoint: pc) {//768px以上
+  @media screen and (min-width: #{map-get($min-breakpoints, $breakpoint)}) {
+    @content;
+  }
+}
+
+//非表示設定
+@include min-mq() {//768px以上
+  .hidden-pc {
+    display: none;
+  }
+}
+@include max-mq() {//767px以下
+  .hidden-sp {
+    display: none;
+  }
+}
+
+img{
+  max-width: 100%;
+}
+
+// ---------------------------------------------
+//  基本設定
+// ---------------------------------------------
+
+//変数
+//色の設定
+$maincolor1 : #ffe633;
+$maincolor2 : #1ab6cc;
+$accentcolor1 : #cc0033;
+$textcolor1 :#333333;
+
+
+// ベンダープレフィックス
+@mixin css3($property, $value) {
+    @each $prefix in -webkit-, -moz-, -ms-, -o-, '' {
+         #{$prefix}#{$property}: $value;
+    }
+}
+
+//flexbox
+//左揃え
+@mixin flex{
+    display: flex;
+    flex-wrap: wrap;
+}
+//両端揃え
+@mixin flex_between {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+//上下センター display:flexで
+@mixin v_center{
+    display: flex;
+    align-items: center; 
+}
+//上下左右センター display:flexで
+@mixin center{
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+}
+
+//縁取り文字　$colorは「 #000000 , red 」の書き方。太さは数字のみ。 2pxまでが良いかと。  
+@mixin textborder($color, $width){
+    text-shadow:
+     (1px * $width) (1px * $width) 0 $color,
+     (-1px * $width) (-1px*$width) 0 $color,
+     (-1px * $width) (1px *$width) 0 $color,
+     (1px * $width) (-1px * $width) 0 $color,
+     0px (1px * $width) 0 $color,
+     0 (-1px * $width) 0 $color,
+     (-1px * $width) 0 0 $color,
+     (1px *$width) 0 0 $color;
+}
+
+@mixin dottedline($color,$position){
+  position: relative;
+  &::before,&::after{
+    content: "";
+    width: 100%;
+    position: absolute;
+    display: block;
+    left: 0;
+    z-index: -1;
+  }
+  &::before{
+    height: 6px;
+    border-top: dotted 2px $color;
+    border-bottom: dotted 2px $color;
+    bottom: (-1px * $position) ;
+  }
+  &::after{
+    border-top: dotted 2px $color;
+    bottom: (-1px * $position - 4px);
+  }
+}
+
+
+
+
+
+
+/////////
+//共通設定
+/////////
+*{
+    text-decoration: none;
+    box-sizing: border-box;
+    font-style: normal;
+
+    &::after{
+        box-sizing: border-box;
+    }
+    &::before{
+        box-sizing: border-box;
+    }
+}
+
+//フォントサイズ　1rem = 16px から 1rem = 10px に変更
+html {
+    font-size: 62.5%;
+}
+body {
+  //font-family: "游ゴシック体", YuGothic, "游ゴシック Medium", "Yu Gothic Medium", "游ゴシック", "Yu Gothic", sans-serif;
+  font-size: 1.6em;
+  line-height: 1.6;
+  color: $textcolor1;
+
+}
+
+ul{
+  list-style-type: none;
+}
+
+//游ゴシックの太字対応
+//.bold{
+//  font-family: "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", sans-serif;
+//  font-weight: bold;
+//}
+
+
+//明朝体
+//.font_min{
+//  font-family: 游明朝,"Yu Mincho",YuMincho,"Hiragino Mincho ProN",HGS明朝E,メイリオ,Meiryo,serif;
+//  font-weight: bold;
+//}
+
+
+//container
+.container{
+  width: 1060px;
+  margin: 0 auto;
+
+  @include max-mq(){
+    width: 100%;
+  }
+}
+
+//リンクの色・ロールオーバー
+a{
+  transition: 0.1s;
+  color: inherit;
+  &:hover{
+    opacity: 0.5;
+    transition: 0.2s;
+  }
+}
+
+//注釈の※マーク
+.comment{
+  &::before{
+    content: "※";
+  }
+}
+//下線 色と太さを指定する太さは文字に対して、%指定　★font-size 16pxで下線が4pxなら25%
+@mixin marker($color,$height){
+  @include css3(background, linear-gradient(transparent (100%-$height), $color (100%-$height)));
+}    
+
+//電話番号のリンク、SP時のみ電話がかかる。
+@media(min-width: 768px){
+  a[href^="tel:"]{
+    pointer-events: none;
+  }
+}
+// ---------------------------------------------
+//  共通
+// ---------------------------------------------
+

@@ -1,0 +1,874 @@
+@charset "utf-8";
+
+//----------------------------------------
+//レスポンシブ用
+//----------------------------------------
+
+// ブレイクポイント設定
+$max-breakpoints: (
+        /*'sm': 640px,*/
+        'tb': 767px,
+        /*'pc': 960px*/
+);
+$min-breakpoints: (
+        /*'tb': 641px,*/
+        'pc': 768px
+);
+
+
+// メディアクエリ用
+@mixin max-mq($breakpoint: tb) {//767px以下
+  @media screen and (max-width: #{map-get($max-breakpoints, $breakpoint)}) {
+    @content;
+  }
+}
+
+@mixin min-mq($breakpoint: pc) {//768px以上
+  @media screen and (min-width: #{map-get($min-breakpoints, $breakpoint)}) {
+    @content;
+  }
+}
+
+//非表示設定
+@include min-mq() {//768px以上
+  .hidden-pc {
+    display: none;
+  }
+}
+@include max-mq() {//767px以下
+  .hidden-sp {
+    display: none;
+  }
+}
+
+img{
+  max-width: 100%;
+  vertical-align: bottom;
+}
+
+// ---------------------------------------------
+//  基本設定
+// ---------------------------------------------
+
+//変数
+//色の設定
+$maincolor1 : #F6EFED;
+$maincolor2 : #F6EFED;
+$accentcolor1 : #BF8360;
+$textcolor1 :#121212;
+
+
+// ベンダープレフィックス
+@mixin css3($property, $value) {
+    @each $prefix in -webkit-, -moz-, -ms-, -o-, '' {
+         #{$prefix}#{$property}: $value;
+    }
+}
+
+//flexbox
+//左揃え
+@mixin flex{
+    display: flex;
+    flex-wrap: wrap;
+}
+//両端揃え
+@mixin flex_between {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+//上下センター display:flexで
+@mixin v_center{
+    display: flex;
+    align-items: center; 
+}
+//上下左右センター display:flexで
+@mixin center{
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+}
+
+//縁取り文字　$colorは「 #000000 , red 」の書き方。太さは数字のみ。 2pxまでが良いかと。  
+@mixin textborder($color, $width){
+    text-shadow:
+     (1px * $width) (1px * $width) 0 $color,
+     (-1px * $width) (-1px*$width) 0 $color,
+     (-1px * $width) (1px *$width) 0 $color,
+     (1px * $width) (-1px * $width) 0 $color,
+     0px (1px * $width) 0 $color,
+     0 (-1px * $width) 0 $color,
+     (-1px * $width) 0 0 $color,
+     (1px *$width) 0 0 $color;
+}
+
+@mixin dottedline($color,$position){
+  position: relative;
+  &::before,&::after{
+    content: "";
+    width: 100%;
+    position: absolute;
+    display: block;
+    left: 0;
+    z-index: -1;
+  }
+  &::before{
+    height: 6px;
+    border-top: dotted 2px $color;
+    border-bottom: dotted 2px $color;
+    bottom: (-1px * $position) ;
+  }
+  &::after{
+    border-top: dotted 2px $color;
+    bottom: (-1px * $position - 4px);
+  }
+}
+
+/////////
+//共通設定
+/////////
+*{
+    text-decoration: none;
+    box-sizing: border-box;
+    font-style: normal;
+
+    &::after{
+        box-sizing: border-box;
+    }
+    &::before{
+        box-sizing: border-box;
+    }
+}
+
+//フォントサイズ　1rem = 16px から 1rem = 10px に変更
+html {
+    font-size: 62.5%;
+}
+body {
+  //font-family: "游ゴシック体", YuGothic, "游ゴシック Medium", "Yu Gothic Medium", "游ゴシック", "Yu Gothic", sans-serif;
+  font-family: 'Noto Serif JP', serif;
+  font-size: 1.6em;
+  line-height: 1.6;
+  color: $textcolor1;
+
+}
+
+ul{
+  list-style-type: none;
+}
+
+//游ゴシックの太字対応
+//.bold{
+//  font-family: "游ゴシック体", YuGothic, "游ゴシック", "Yu Gothic", sans-serif;
+//  font-weight: bold;
+//}
+
+
+//明朝体
+//.font_min{
+//  font-family: 游明朝,"Yu Mincho",YuMincho,"Hiragino Mincho ProN",HGS明朝E,メイリオ,Meiryo,serif;
+//  font-weight: bold;
+//}
+
+
+//container
+.container{
+  width: 1060px;
+  margin: 0 auto;
+
+  @include max-mq(){
+    width: 100%;
+  }
+}
+
+//リンクの色・ロールオーバー
+a{
+  transition: 0.1s;
+  color: inherit;
+  &:hover{
+    opacity: 0.5;
+    transition: 0.2s;
+  }
+}
+
+//注釈の※マーク
+.comment{
+  &::before{
+    content: "※";
+  }
+}
+//下線 色と太さを指定する太さは文字に対して、%指定　★font-size 16pxで下線が4pxなら25%
+@mixin marker($color,$height){
+  @include css3(background, linear-gradient(transparent (100%-$height), $color (100%-$height)));
+}    
+
+//電話番号のリンク、SP時のみ電話がかかる。
+@media(min-width: 768px){
+  a[href^="tel:"]{
+    pointer-events: none;
+  }
+}
+// ---------------------------------------------
+//  共通
+// ---------------------------------------------
+
+//読み込み時フェードイン
+html{
+  body{
+    opacity: 0;//フェードイン用 初期値
+    position: relative;//フッター最下部固定用
+    &.show{
+      opacity: 1;
+      transition: 0.25s;
+    }
+  }
+}
+
+.wrapper{
+  height: 100vh;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+main{
+  position: relative;
+}
+
+main > section{
+  min-height: 100vh;
+  padding-top: 4.5em;
+  @include max-mq(){
+    padding-top: 2em;
+    padding-bottom: 70px;
+  }
+}
+
+// ---------------------------------------------
+//  ヘッダー
+// ---------------------------------------------
+.headbox{
+  header{
+    height: 92vh;
+    background-position: center;
+    background-size: cover;
+    position: relative;
+
+   /* &:hover{
+      &::before{
+        content: "scroll\A↓";
+        display: none;
+        white-space: pre;
+        position: absolute;
+        top: 85vh;
+        text-align: center;
+        right: 0;
+        left: 0;
+        margin: 0 auto;
+        color: $maincolor1;  
+      }
+    } */
+  
+  
+    h1{
+      width: 410px;
+      height: 210px;
+      font-weight: 400;
+      background-color: rgba($color: #000000, $alpha: 0.3);
+      position: absolute;
+      top: 33%;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      border: 5px $maincolor1 solid;
+      color: $maincolor1;
+      box-shadow: 0px 1px 4px 0px rgba($color: #000000, $alpha: 0.4) ;
+      font-size: 2.8rem;
+      transition: 0.25s;
+  
+      .inner{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        white-space: nowrap;
+        line-height: 1.4;
+  
+        .sub01{
+          font-size:1.4rem;
+          line-height: 1.8rem;
+          display: block;
+          margin-bottom: 0.5em;
+  
+          .bg{
+            display: inline-block;
+            background-color: $maincolor1;
+            padding: 0 4px;
+            color: $textcolor1;
+          }
+        }
+        .sub02{
+          font-size: 1.4rem;
+          text-align: right;
+          display: block;
+        }
+      }
+      &:hover{
+        transition: 0.25s;
+        &+.note{
+          display: block;
+        }
+      }
+    }
+
+    .blink {
+      animation: blinkAnime 1s infinite alternate;
+    }
+    @keyframes blinkAnime{
+      0% {
+        opacity: 0.1;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+    @include min-mq(){
+      background-image: url(../images/main01_pc.jpg);
+
+    }
+
+    @include max-mq(){
+      background-image: url(../images/main01_sp.jpg);
+      background-size: cover;
+      height: 100vh;
+
+      h1{
+        width: 80%;
+        font-size: 2rem;
+        .sub01{
+          font-size: 1.2rem;
+        }
+        .sub02{
+          font-size: 1.2rem;
+        }
+      }
+    }
+  }  
+  .palbox01{
+    position: relative;
+    overflow: hidden;
+    height: 45vw;
+
+    @include min-mq(){
+      margin-top: 2.5em;
+      height: 20vw;
+    }
+
+    &.navfixed{
+      margin-top: 2.5em;
+    }
+    figure{
+      img{
+        position: absolute;
+        bottom: 0;
+        z-index: -1;
+      }
+    }
+
+  }
+  .nav_box{
+    background-color: $maincolor1;
+    color: $textcolor1;
+    width: 100%;
+    transition: 0.25s;
+    position: absolute;
+    z-index: 10;
+
+    &.reverse{
+      background-color: $textcolor1;
+      color: $maincolor1;
+      transition: 0.25s;
+    }
+
+    &.fixed{
+      position: fixed;
+      top: 0;
+    }
+    nav{
+      @include min-mq(){
+        display: flex;
+        justify-content: space-between;
+      }
+      display: none;
+      .glnav{
+        li{
+          padding: 0 1em;
+          font-size: 1.6rem;
+          line-height: 2.5;
+          font-weight: 700;
+        }
+        @include min-mq(){
+          padding-left: 15%;
+          display: flex;
+        }
+        @include max-mq(){
+          justify-content: space-around;
+          li{
+            padding: 0;
+            width: 100%;
+            border-bottom: #555 1px dashed;
+
+            &:first-of-type{
+              border-top: $maincolor1 1px solid;
+            }
+            a{
+              display: block;
+              text-align: center;
+              padding-top: 0.5em;
+              padding-bottom: 0.5em;
+            }
+          }
+        }
+      }
+      .sns{
+        display: flex;
+
+        @include min-mq(){
+          padding-right: 15%;
+        }
+        @include max-mq(){
+          justify-content: center;
+          padding-top:0.5em;
+        }
+        li{
+            &:not(:first-of-type){
+              margin-left: 20px;
+          }
+           a{
+            display: block;
+            margin-top: 5px;
+            width: 30px;
+            height: 30px;
+            padding: 2px;
+            background-color: $maincolor1;
+            border-radius: 25%;
+            &.circle{
+              border-radius: 50%;
+            }
+          }
+        }
+      }
+    }
+    @include max-mq(){
+        position: fixed;
+        bottom: 0;
+        z-index: 10;
+        background-color: $textcolor1;
+        color: $maincolor1;
+        padding-bottom: 70px;
+    }
+      //ボタン
+  #btn_nav{
+    width: 40px;
+    height: 40px;
+    z-index: 20;
+    cursor:	pointer;
+    border-radius: 10%;
+    background-color: transparent;
+    border: none;
+    position: absolute;
+    bottom: 20px;
+
+    @include min-mq(){
+      display: none;
+    }
+
+    span{
+      visibility: hidden;
+    }
+    &::before ,&::after{
+        content:"";
+        position: absolute;
+        left: 0;
+        right: 0;
+        margin: 0 auto;
+        width: 80%;
+        transition: 0.3s;
+    }
+    
+    &::before{
+        border-top: solid 2px $maincolor2;
+        border-bottom: solid 2px $maincolor2;
+        height: 12px;
+        top: 9px;
+    }
+    &::after{
+        border-top: solid 2px $maincolor2;
+        bottom: 8px;
+    }
+    
+    &.open{
+
+        span{
+            display: none;
+        }
+        &::before,&::after{
+            transition: 0.3s;
+            border-color: #fff;
+
+        }
+        &::before{
+          top: 50%;
+            height: 0;
+            transform: rotate(-135deg);
+            border-bottom: none;
+        }
+        &::after{
+          top:	50%;
+          transform: rotate(135deg);
+          bottom: auto;
+        }
+    }
+    @include max-mq(){
+      left: 10px;
+    }
+  } 
+
+  }  
+}
+// ---------------------------------------------
+//  写真
+// ---------------------------------------------
+
+#photograph{
+  display: flex;
+  background-color: $textcolor1;
+  position: relative;
+
+  .nav_box{
+    width: 20%;
+    flex-shrink: 0;
+    position: relative;
+    padding-left: 2em;
+    @include min-mq(){
+      max-width: 250px;/*pc時は最大幅250px*/
+      z-index: 9;
+    }
+
+    .inner{
+      position: sticky;
+      position: -webkit-sticky;
+
+      @include min-mq(){
+        padding-bottom: 10vw;
+        top: 4.5em;
+      }
+      h2{
+        color: $maincolor1;
+        font-size: 1rem;
+        font-weight: 500;
+        margin-bottom: 3em;
+      }
+      ul{
+        color: $maincolor1;
+        font-size: 1.2rem;
+        li{
+          margin-bottom: 1em;
+          a{
+            &::before{
+              content: "- ";
+            }
+          }
+        }
+      }  
+    }
+  }
+  .photo_box{
+    flex-grow: 1;
+    background-color: $textcolor1;
+    padding-bottom: 30px;
+    ul{
+      display: flex;
+      flex-wrap: wrap;
+      li{
+        margin-bottom: 10px;
+        padding-top: 0;
+        padding-bottom: 0;
+        margin-left: 0.5%;
+        margin-right: 0.5%;
+        overflow: hidden;
+
+        &.vertical{
+          width: 15.65%;
+        }
+        &.horizontal{
+          width: 24%;
+        }
+        &.park_vertical{
+          width: 18%;
+        }
+        &.park_horisontal{
+          width: 30%;
+        }
+        a{
+          img{
+            opacity: 1;
+            transition: 0.3s;  
+          
+            &.hidden{
+              opacity: 0;
+              transition: 0.3s;
+            }
+          }
+          &:hover{
+            img{
+              transform:scale(1.1);
+              transition: 0.3s;
+            }
+          }
+        }
+      }
+    }
+  }
+  @include max-mq(){
+    flex-direction: column-reverse;
+    
+    .nav_box{
+      width: 100%;
+      padding-top: 1.5em;
+      position: -webkit-sticky;
+      position: sticky;
+      bottom: 70px;
+      background-color: $textcolor1;
+      opacity: 0.9;
+      .inner{
+        h2{
+          margin-bottom: 1.5em;
+        }
+        ul{
+          font-size: 1.2rem;
+          li{
+            margin-bottom: 0;
+            a{
+              padding: 0.5em 0;
+              display: block;
+            }
+          }
+        }
+      }
+    }
+    .photo_box{
+      padding: 5px;
+      ul{
+        li{
+          &.vertical{
+            width: 32.33%;
+          }
+          &.horizontal{
+            width: 49%;
+          }
+          &.park_vertical{
+            width: 34%;
+          }
+          &.park_horisontal{
+            width: 64%;
+          }  
+        }
+      }
+    }
+  }
+}
+// ---------------------------------------------
+//  自己紹介・連絡
+// ---------------------------------------------
+
+//共通
+#profile .container,#contact .container{
+  width: 90%;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 60px;
+
+  h2{
+    font-size: 2.4rem;
+    padding-bottom: 40px;
+    text-align: center;
+    border-bottom: 1px solid $maincolor1;
+    font-weight: 700;
+    margin-bottom: 30px;
+  }
+
+  @include max-mq(){
+    padding: 15px;
+  }
+}
+//自己紹介
+#profile{
+  background-image: url(../images/bg_02.jpg);
+  background-size: cover;
+  background-position: left 0px bottom 0px;
+  overflow: hidden;
+
+  .container{
+    background-color: rgba($color: #000000, $alpha: 0.65);
+    color: $maincolor1;
+    position: relative;
+    top: 0;
+    transition: 1s;
+    opacity: 1;
+
+    &.hide{
+      top: 25vh;
+      transition: 1s;
+      opacity: 0;
+    }
+  }
+  h3{
+    &.name{
+      font-size: 2rem;
+      text-align: center;
+    }
+  }
+}
+.prof_inner{
+  display: flex;
+  justify-content: space-between;
+  padding: 25px 0;
+
+  @include max-mq(){
+    flex-flow: column;
+  }  
+  &.bottom{
+    border-top: 1px solid $maincolor1;
+    .prof_box{
+      section{
+        &:not(:last-child){
+          margin-bottom: 2em;
+        }
+      }
+    }       
+  }
+
+  .prof_box{
+    @include min-mq(){
+      width: 48%;/*pc 48%　　sp 100%*/
+    }
+    &.pic{
+      figure{
+        width: 60%;
+        margin: 0 auto;
+      }
+    }
+    &.career{
+      font-size: 1.3rem;
+      dt{
+        float: left;
+        margin-right: 1em;
+      }
+      dd{
+        overflow: hidden;
+        .marker{
+          @include marker(#555,30% );
+        }
+      }
+    }
+  }
+  &.bottom{
+    h4{
+      font-size: 1.4rem;
+    }
+    p{
+      text-indent: 1em;
+      font-size: 1.3rem;
+    }
+    dl{
+      font-size: 1.3rem;
+      dt{
+        float: left;
+        margin-right: 1em;
+        text-indent: 1em;        
+      }
+      dd{
+        overflow: hidden;
+      }
+    }
+  }
+}
+//連絡先
+#contact{
+  background-color: $textcolor1;
+  color: $maincolor1;
+  font-size: 1.4rem;
+  line-height: 1.8;
+  font-weight: 500;
+  overflow: hidden;
+
+  .message{
+    margin-bottom: 2em;
+  }
+
+  form{
+    dl{
+      dt{
+        @include min-mq(){
+          float: left;
+          margin-right: 2em;
+          width: 10em;
+          text-indent: 1em;
+        }
+        &::after{
+          content: "：";
+        }
+      }
+      dd{
+        @include min-mq(){
+          overflow: hidden;
+        }
+        margin-bottom: 1em;
+        input{
+          &.text{
+            width: 23em;
+            @include max-mq(){
+              width: 70%;
+            }
+          }
+        }
+        textarea{
+          width: 30em;
+          @include max-mq(){
+            width: 100%;
+          }
+        }  
+      }
+    }
+    .button{
+      text-align: center;
+      margin-bottom: 1em;
+      input{
+        border: none;
+        background-color:$maincolor1;
+        &:hover{
+          background-color: $accentcolor1;
+          transition: 0.5s;
+        }
+        &:first-of-type{
+          margin-right: 1em;
+        }
+      }
+    }
+  }
+  .personalinfo{
+    padding-bottom: 2em;
+  }
+}
+
+footer{
+  text-align: center;
+  font-size: 1.2rem;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  background-color: #fff;
+  @include max-mq(){
+    bottom: 70px;
+  }
+}

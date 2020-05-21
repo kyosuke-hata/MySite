@@ -1,0 +1,75 @@
+@charset "UTF-8";
+@media screen and (min-width: 768px) {
+  .hidden-pc {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .hidden-sp {
+    display: none;
+  }
+}
+
+img {
+  max-width: 100%;
+}
+
+* {
+  text-decoration: none;
+  box-sizing: border-box;
+  font-style: normal;
+}
+
+*::after {
+  box-sizing: border-box;
+}
+
+*::before {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.6em;
+  line-height: 1.6;
+  color: #333333;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.container {
+  width: 1060px;
+  margin: 0 auto;
+}
+
+@media screen and (max-width: 767px) {
+  .container {
+    width: 100%;
+  }
+}
+
+a {
+  transition: 0.1s;
+  color: inherit;
+}
+
+a:hover {
+  opacity: 0.5;
+  transition: 0.2s;
+}
+
+.comment::before {
+  content: "※";
+}
+
+@media (min-width: 768px) {
+  a[href^="tel:"] {
+    pointer-events: none;
+  }
+}

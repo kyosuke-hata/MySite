@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=shift_jis" />
+<meta http-equiv="content-style-type" content="text/css" />
+
+<title>お問い合わせフォーム : 確認画面</title>
+<link href="../../css/reset.css" rel="stylesheet" type="text/css" />
+<link href="../../css/style.css" rel="stylesheet" type="text/css" />
+<link href="http://hatapyon.sakura.ne.jp/css/bootstrap-3.3.7.css" rel="stylesheet" type="text/css">
+
+</head>
+<body>
+ <div id="box_right">
+  <main>
+    <div class="main_inner" id="contact">
+    	<section>
+
+			
+			<p>以下の内容でよろしければ「送信する」ボタンを押して下さい。 </p>
+
+			<table class="form">
+
+			<!-- cell_begin -->
+			<tr>
+			  <th>!key!</th>
+			  <td>!val!</td>
+			</tr>
+			<!-- cell_end -->
+
+			</table>
+			<br />
+			<form action="!mail_cgi!" method="post">
+			<!-- hidden -->
+			<label><input type="button" value="&lt; 前に戻る" onclick="history.back()" class="button" /></label>
+			&nbsp;&nbsp;
+			<label><input type="submit" value="送信する &gt;" class="button" /></label>
+			</form>
+		</section>
+	  </div>
+	</main>
+	</div>
+</body>
+</html>
